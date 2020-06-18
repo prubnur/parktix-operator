@@ -1,0 +1,93 @@
+{
+  "project_info": {
+    "project_number": "753666961708",
+    "firebase_url": "https://parktix-26bdf.firebaseio.com",
+    "project_id": "parktix-26bdf",
+    "storage_bucket": "parktix-26bdf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:753666961708:android:4325f0a4f52d657feb3c89",
+        "android_client_info": {
+          "package_name": "com.example.parktix"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "753666961708-p3999g8p0jg2siq828564s116vltren0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.parktix",
+            "certificate_hash": "be6290df871ad44d94595d50cbfca1ac161cf33e"
+          }
+        },
+        {
+          "client_id": "753666961708-426tcksdjot07fac5m77fmorb8fd2s9u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.parktix",
+            "certificate_hash": "f8ac7b2e3e4aff5b26ccd94bb73d542bc0565746"
+          }
+        },
+        {
+          "client_id": "753666961708-fmrjcopag8nhpbkeaks1clsrvg26u52n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBNqEg78sDTJ_iL4lnrRwcR-5CZXIXjf8s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "753666961708-fmrjcopag8nhpbkeaks1clsrvg26u52n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:753666961708:android:6401d1f1ed4ecb88eb3c89",
+        "android_client_info": {
+          "package_name": "com.example.parktixspaceadmin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "753666961708-4ptjj56s5tbnn6l53udcd2re6d4smuli.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.parktixspaceadmin",
+            "certificate_hash": "f8ac7b2e3e4aff5b26ccd94bb73d542bc0565746"
+          }
+        },
+        {
+          "client_id": "753666961708-fmrjcopag8nhpbkeaks1clsrvg26u52n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBNqEg78sDTJ_iL4lnrRwcR-5CZXIXjf8s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "753666961708-fmrjcopag8nhpbkeaks1clsrvg26u52n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
