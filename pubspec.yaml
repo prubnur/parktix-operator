@@ -33,6 +33,7 @@ dependencies:
   firebase_auth:
   international_phone_input:
   pin_code_fields:
+  uuid:
 
 dev_dependencies:
   flutter_test:
