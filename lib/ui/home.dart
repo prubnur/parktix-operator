@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:barcode_scan/barcode_scan.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -13,7 +13,7 @@ class _HomeState extends State<Home> {
   var result;
   List<String> l;
 
-  var db = Firestore.instance;
+  var ref = FirebaseDatabase.instance.reference().child('vehicles');
   bool flag = false;
 
   Uuid uuid = Uuid();
@@ -36,30 +36,47 @@ class _HomeState extends State<Home> {
                 setState(() {
                   result = temp;
                   if (result!=null && result.rawContent.toString().isNotEmpty) {
-                    l = result.rawContent.split(":");
+                    l = result.rawContent.split("#");
                   }
                 });
                 if (l!=null && l.length > 2 && l[0]!=null && l[1]!=null && l[2]!=null) {
-                  var docRef = db.collection('users').document(l[0]).collection('vehicles').document(l[1]);
+                  var docRef = ref.child(l[0]).child(l[1]);
                   if (l[2]=='en') {
-                    docRef.updateData({
+                    docRef.update({
                       'status': 'PENDING',
                       'token': uuid.v4(),
                     });
+                    setState(() {
+                      flag = true;
+                    });
                   }
                   else if (l[2]=='ex') {
-                    db.runTransaction((transaction) {
-                      return transaction.get(docRef).then((snap) {
-                        if (snap.data['token'] != l[3]) {
-                          throw "Invalid QR Code! Token does not match!";
-                        }
-                        transaction.update(docRef, {
+                    docRef.once().then((value) {
+                      if (value.value['token'] == l[3]) {
+                        docRef.update({
                           'status': 'READY',
-                          'token': null,
+                          'token': null
                         });
-                      });
-                    }).catchError((error) {
-                      showDialog(
+                        setState(() {
+                          flag = true;
+                        });
+                      }
+                      else {
+                        showDialog(
+                            context: context,
+                            child: AlertDialog(
+                              title: Text("Error"),
+                              content: Text("Invalid QR code"),
+                              actions: <Widget>[
+                                FlatButton(onPressed: () => Navigator.pop(context), child: Text("OK"))
+                              ],
+                            )
+                        );
+                      }
+                    });
+                  }
+                  else {
+                    showDialog(
                         context: context,
                         child: AlertDialog(
                           title: Text("Error"),
@@ -68,12 +85,8 @@ class _HomeState extends State<Home> {
                             FlatButton(onPressed: () => Navigator.pop(context), child: Text("OK"))
                           ],
                         )
-                      );
-                    });
+                    );
                   }
-                  setState(() {
-                    flag = true;
-                  });
                 }
               },
             ),
@@ -84,7 +97,7 @@ class _HomeState extends State<Home> {
             Divider(),
             l!=null && l.length > 0 && l[2] != null ? Text(l[2] == 'en' ? 'Entry' : 'Exit') : Text(""),
             Divider(),
-            flag==true ? Icon(Icons.check) : Text(""),
+            flag==true ? Icon(Icons.check) : Icon(Icons.clear),
             Divider(),
             l!=null && l.length > 0 && l[2] == 'ex' ? Text(l[3]) : Text(""),
             Divider(),
