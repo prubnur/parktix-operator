@@ -35,75 +35,82 @@ class _HomeState extends State<Home> {
                 var temp = await BarcodeScanner.scan();
                 setState(() {
                   result = temp;
+                  print(result.rawContent);
                   if (result!=null && result.rawContent.toString().isNotEmpty) {
                     l = result.rawContent.split("#");
                   }
                 });
-                if (l!=null && l.length > 2 && l[0]!=null && l[1]!=null && l[2]!=null) {
-                  var docRef = ref.child(l[0]).child(l[1]);
-                  if (l[2]=='en') {
-                    docRef.update({
-                      'status': 'PENDING',
-                      'token': uuid.v4(),
-                    });
-                    setState(() {
-                      flag = true;
-                    });
-                  }
-                  else if (l[2]=='ex') {
-                    docRef.once().then((value) {
-                      if (value.value['token'] == l[3]) {
-                        docRef.update({
-                          'status': 'READY',
-                          'token': null
-                        });
-                        setState(() {
-                          flag = true;
-                        });
-                      }
-                      else {
-                        showDialog(
-                            context: context,
-                            child: AlertDialog(
-                              title: Text("Error"),
-                              content: Text("Invalid QR code"),
-                              actions: <Widget>[
-                                FlatButton(onPressed: () => Navigator.pop(context), child: Text("OK"))
-                              ],
-                            )
-                        );
-                      }
-                    });
+                if (l!=null && l[0] == 'ParkTix') {
+                  if (l != null && l.length > 2 && l[1] != null &&
+                      l[2] != null && l[3] != null) {
+                    var docRef = ref.child(l[1]).child(l[2]);
+                    if (l[3] == 'en') {
+                      docRef.update({
+                        'status': 'PENDING',
+                        'token': uuid.v4(),
+                      });
+                      setState(() {
+                        flag = true;
+                      });
+                    }
+                    else if (l[3] == 'ex') {
+                      docRef.once().then((value) {
+                        if (value.value['token'] == l[4]) {
+                          docRef.update({
+                            'status': 'READY',
+                            'token': null
+                          });
+                          setState(() {
+                            flag = true;
+                          });
+                        }
+                        else {
+                          invalidQR();
+                        }
+                      });
+                    }
+                    else {
+                      invalidQR();
+                    }
                   }
                   else {
-                    showDialog(
-                        context: context,
-                        child: AlertDialog(
-                          title: Text("Error"),
-                          content: Text("Invalid QR code"),
-                          actions: <Widget>[
-                            FlatButton(onPressed: () => Navigator.pop(context), child: Text("OK"))
-                          ],
-                        )
-                    );
+                    invalidQR();
                   }
+                }
+                else {
+                  invalidQR();
                 }
               },
             ),
             Divider(),
-            l!=null && l.length > 0 && l[0] != null ? Text(l[0]) : Text(""),
+            l!=null && l[0] == 'ParkTix' ? Text(l[1]) : Text(""),
             Divider(),
-            l!=null && l.length > 0 && l[1] != null ? Text(l[1]) : Text(""),
+            l!=null && l[0] == 'ParkTix' ? Text(l[2]) : Text(""),
             Divider(),
-            l!=null && l.length > 0 && l[2] != null ? Text(l[2] == 'en' ? 'Entry' : 'Exit') : Text(""),
+            l!=null && l[0] == 'ParkTix' ? Text(l[3] == 'en' ? 'Entry' : 'Exit') : Text(""),
             Divider(),
             flag==true ? Icon(Icons.check) : Icon(Icons.clear),
             Divider(),
-            l!=null && l.length > 0 && l[2] == 'ex' ? Text(l[3]) : Text(""),
+            l!=null && l[0]=='ParkTix' && l[2] == 'ex' ? Text(l[4]) : Text(""),
             Divider(),
           ],
         ),
       ),
+    );
+  }
+
+  void invalidQR() {
+    showDialog(
+        context: context,
+        child: AlertDialog(
+          title: Text("Error"),
+          content: Text("Invalid QR code"),
+          actions: <Widget>[
+            FlatButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text("OK"))
+          ],
+        )
     );
   }
 }
