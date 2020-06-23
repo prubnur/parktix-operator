@@ -9,7 +9,7 @@ class Home extends StatelessWidget {
       length: 2,
         child: Scaffold(
           appBar: AppBar(
-            title: Text("ParkTix Operator", style: TextStyle(fontSize: 30),),
+            title: Text("ParkTix-O", style: TextStyle(fontSize: 30),),
             centerTitle: false,
             bottom: TabBar(
                 tabs: [
