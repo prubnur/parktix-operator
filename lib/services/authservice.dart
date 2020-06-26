@@ -22,18 +22,15 @@ class AuthService {
     FirebaseAuth.instance.signOut();
   }
 
-  signIn(AuthCredential authCreds, String name) async {
-    var creds = await FirebaseAuth.instance.signInWithCredential(authCreds);
-    UserUpdateInfo updateInfo = UserUpdateInfo();
-    updateInfo.displayName = name;
-    creds.user.updateProfile(updateInfo);
+  signIn(AuthCredential authCreds) {
+    FirebaseAuth.instance.signInWithCredential(authCreds);
   }
 
-  signInWithOTP(String smsCode, String verId, name) {
+  signInWithOTP(String smsCode, String verId) {
     AuthCredential authCreds = PhoneAuthProvider.getCredential(
         verificationId: verId,
         smsCode: smsCode
     );
-    signIn(authCreds, name);
+    signIn(authCreds);
   }
 }
