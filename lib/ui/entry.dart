@@ -15,14 +15,21 @@ class _EntryState extends State<Entry> with AutomaticKeepAliveClientMixin {
   List<String> l;
 
   String regno;
-  int amount = 4000;
-  String locID = 'testLocId';
-  String locName = 'X Mall';
+  int amount;
+  String locID;
+  String locName;
+  
+  final auth = FirebaseAuth.instance;
 
   var ref = FirebaseDatabase.instance.reference().child('vehicles');
+  
+  var rootRef = FirebaseDatabase.instance.reference();
+  
   bool flag = false;
 
   Uuid uuid = Uuid();
+
+  bool isLoading = true;
 
   @override
   bool get wantKeepAlive => true;
@@ -31,12 +38,27 @@ class _EntryState extends State<Entry> with AutomaticKeepAliveClientMixin {
   void initState() {
     // TODO: implement initState
     super.initState();
+    getUser();
+  }
+  
+  getUser() async {
+    FirebaseUser user = await auth.currentUser();
+    rootRef.child('operators').child(user.phoneNumber).once().then((value) {
+      rootRef.child('locations').child(value.value).once().then((val) {
+        amount = val.value['price'];
+        locID = val.key;
+        locName = val.value['name'];
+      });
+    });
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
+      body: !isLoading ? Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -134,7 +156,7 @@ class _EntryState extends State<Entry> with AutomaticKeepAliveClientMixin {
             ),
           ],
         ),
-      ),
+      ) : Center(child: CircularProgressIndicator(),),
     );
   }
 
