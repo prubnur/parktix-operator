@@ -15,6 +15,7 @@ class _EntryState extends State<Entry> with AutomaticKeepAliveClientMixin {
   List<String> l;
 
   String regno;
+  String phone;
   int amount;
   String locID;
   String locName;
@@ -95,37 +96,71 @@ class _EntryState extends State<Entry> with AutomaticKeepAliveClientMixin {
                       l[2] != null && l[3] != null) {
                     var docRef = ref.child(l[1]).child(l[2]);
                     if (l[3] == 'en') {
-                      docRef.once().then((value) {
-                        String temp = value.value['regno'];
+                      String temp;
+                      await docRef.once().then((value) {
+                        temp = value.value['regno'];
                         setState(() {
                           regno = temp;
                         });
                       });
-                      docRef.update({
-                        'status': 'PENDING',
-                        'token': uuid.v4(),
-                        'amount': amount,
-                        'locID': locID,
-                        'locName': locName
-                      }).then((value) {
+                      Map<String, dynamic> updates = {};
+                      var newKey = rootRef.child('logs').child(locID).push().key;
+                      debugPrint(temp);
+                      updates['/logs/' + locID + '/' + newKey] = {
+                        'vregno': regno,
+                        'entryts': DateTime.now().millisecondsSinceEpoch,
+                        'status': 'ENTERED',
+                      };
+                      updates['/vehicles/' + l[1] + '/' + l[2] + '/status'] = "PENDING";
+                      updates['/vehicles/' + l[1] + '/' + l[2] + '/token'] = uuid.v4();
+                      updates['/vehicles/' + l[1] + '/' + l[2] + '/amount'] = amount;
+                      updates['/vehicles/' + l[1] + '/' + l[2] + '/locID'] = locID;
+                      updates['/vehicles/' + l[1] + '/' + l[2] + '/locName'] = locName;
+                      updates['/vehicles/' + l[1] + '/' + l[2] + '/logID'] = newKey;
+                      rootRef.update(updates).then((value) {
                         setState(() {
                           flag = true;
                         });
-                      },
-                      onError: (error) {
+                      }, onError: (error) {
                         showDialog(
-                            context: context,
-                            child: AlertDialog(
-                              title: Text("Error"),
-                              content: Text(error.toString()),
-                              actions: <Widget>[
-                                FlatButton(
-                                    onPressed: () => Navigator.pop(context),
-                                    child: Text("OK"))
-                              ],
-                            )
+                          context: context,
+                          child: AlertDialog(
+                            title: Text("Error"),
+                            content: Text(error.toString()),
+                            actions: <Widget>[
+                              FlatButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: Text("OK")
+                              )
+                            ],
+                          )
                         );
                       });
+//                      docRef.update({
+//                        'status': 'PENDING',
+//                        'token': uuid.v4(),
+//                        'amount': amount,
+//                        'locID': locID,
+//                        'locName': locName
+//                      }).then((value) {
+//                        setState(() {
+//                          flag = true;
+//                        });
+//                      },
+//                      onError: (error) {
+//                        showDialog(
+//                            context: context,
+//                            child: AlertDialog(
+//                              title: Text("Error"),
+//                              content: Text(error.toString()),
+//                              actions: <Widget>[
+//                                FlatButton(
+//                                    onPressed: () => Navigator.pop(context),
+//                                    child: Text("OK"))
+//                              ],
+//                            )
+//                        );
+//                      });
                     }
                     else if (l[3] == 'ex') {
                       showDialog(

@@ -19,6 +19,8 @@ class _ExitState extends State<Exit> with AutomaticKeepAliveClientMixin{
 
   String regno;
 
+  var rootRef = FirebaseDatabase.instance.reference();
+
   @override
   bool get wantKeepAlive => true;
 
@@ -80,20 +82,20 @@ class _ExitState extends State<Exit> with AutomaticKeepAliveClientMixin{
                     else if (l[3] == 'ex') {
                       docRef.once().then((value) {
                         if (value.value['token'] == l[4]) {
-                          var temp = value.value['regno'];
-                          docRef.update({
-                            'status': 'READY',
-                            'token': null,
-                            'amount': null,
-                            'locID': null,
-                            'locName': null,
-                          }).then((value) {
+                          Map<String, dynamic> updates = {};
+                          updates['/logs/' + value.value['locID'] + '/' + value.value['logID'] + '/exitts'] = DateTime.now().millisecondsSinceEpoch;
+                          updates['/logs/' + value.value['locID'] + '/' + value.value['logID'] + '/status'] = "EXITED";
+                          updates['/vehicles/' + l[1] + '/' + l[2] + '/status'] = "READY";
+                          updates['/vehicles/' + l[1] + '/' + l[2] + '/token'] = null;
+                          updates['/vehicles/' + l[1] + '/' + l[2] + '/amount'] = null;
+                          updates['/vehicles/' + l[1] + '/' + l[2] + '/locID'] = null;
+                          updates['/vehicles/' + l[1] + '/' + l[2] + '/locName'] = null;
+                          updates['/vehicles/' + l[1] + '/' + l[2] + '/logID'] = null;
+                          rootRef.update(updates).then((value) {
                             setState(() {
                               flag = true;
-                              regno = temp;
                             });
-                          },
-                          onError: (error) {
+                          }, onError: (error) {
                             showDialog(
                                 context: context,
                                 child: AlertDialog(
@@ -102,7 +104,8 @@ class _ExitState extends State<Exit> with AutomaticKeepAliveClientMixin{
                                   actions: <Widget>[
                                     FlatButton(
                                         onPressed: () => Navigator.pop(context),
-                                        child: Text("OK"))
+                                        child: Text("OK")
+                                    )
                                   ],
                                 )
                             );
