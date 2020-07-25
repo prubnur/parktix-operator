@@ -81,8 +81,9 @@ class _ExitState extends State<Exit> with AutomaticKeepAliveClientMixin{
                     }
                     else if (l[3] == 'ex') {
                       docRef.once().then((value) {
-                        if (value.value['token'] == l[4]) {
+                        if (value.value!=null && value.value["status"]=="ACCEPTED" && value.value['token'] == l[4]) {
                           Map<String, dynamic> updates = {};
+                          String temp = value.value["regno"];
                           updates['/logs/' + value.value['locID'] + '/' + value.value['logID'] + '/exitts'] = DateTime.now().millisecondsSinceEpoch;
                           updates['/logs/' + value.value['locID'] + '/' + value.value['logID'] + '/status'] = "EXITED";
                           updates['/vehicles/' + l[1] + '/' + l[2] + '/status'] = "READY";
@@ -93,6 +94,7 @@ class _ExitState extends State<Exit> with AutomaticKeepAliveClientMixin{
                           updates['/vehicles/' + l[1] + '/' + l[2] + '/logID'] = null;
                           rootRef.update(updates).then((value) {
                             setState(() {
+                              regno = temp;
                               flag = true;
                             });
                           }, onError: (error) {
