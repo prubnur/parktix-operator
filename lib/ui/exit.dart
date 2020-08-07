@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:barcode_scan/barcode_scan.dart';
+import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import 'package:firebase_database/firebase_database.dart';
 
@@ -84,14 +85,21 @@ class _ExitState extends State<Exit> with AutomaticKeepAliveClientMixin{
                         if (value.value!=null && value.value["status"]=="ACCEPTED" && value.value['token'] == l[4]) {
                           Map<String, dynamic> updates = {};
                           String temp = value.value["regno"];
+                          String logID = value.value['logID'];
+
                           updates['/logs/' + value.value['locID'] + '/' + value.value['logID'] + '/exitts'] = DateTime.now().millisecondsSinceEpoch;
                           updates['/logs/' + value.value['locID'] + '/' + value.value['logID'] + '/status'] = "EXITED";
+
                           updates['/vehicles/' + l[1] + '/' + l[2] + '/status'] = "READY";
                           updates['/vehicles/' + l[1] + '/' + l[2] + '/token'] = null;
                           updates['/vehicles/' + l[1] + '/' + l[2] + '/amount'] = null;
                           updates['/vehicles/' + l[1] + '/' + l[2] + '/locID'] = null;
                           updates['/vehicles/' + l[1] + '/' + l[2] + '/locName'] = null;
                           updates['/vehicles/' + l[1] + '/' + l[2] + '/logID'] = null;
+
+                          updates['/visits/' + l[1] + '/' + logID + '/exitts'] = DateTime.now().millisecondsSinceEpoch;
+                          updates['/visits/' + l[1] + '/' + logID + '/status'] = "EXITED";
+
                           rootRef.update(updates).then((value) {
                             setState(() {
                               regno = temp;

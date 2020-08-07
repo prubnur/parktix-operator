@@ -6,7 +6,7 @@ List<DropdownMenuItem> venues = [
     value: "",
   ),
   DropdownMenuItem(
-    child: Text("ABC Mall"),
+    child: Text("AIPL Business Club"),
     value: "-MAiiqWnIcXWGBvQbHXc",
   )
 ];
