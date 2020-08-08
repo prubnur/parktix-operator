@@ -138,7 +138,7 @@ class _EntryState extends State<Entry> with AutomaticKeepAliveClientMixin {
                               value.value['visitors'][date]!=null &&
                               value.value['visitors'][date][l[1]]!=null &&
                               value.value['visitors'][date][l[1]][regno]!=null) {
-                            var keyy = value.value['visitors'][date][l[1]][regno]['vid'];
+                            var keyy = value.value['visitors'][date][l[1]][regno]['visitKey'];
 
                             updates['/allowed_vehicles/' + locID + '/visitors/' + date + '/' + l[1] + '/' + regno] = null;
 
