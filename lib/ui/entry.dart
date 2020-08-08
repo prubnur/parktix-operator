@@ -138,26 +138,26 @@ class _EntryState extends State<Entry> with AutomaticKeepAliveClientMixin {
                               value.value['visitors'][date]!=null &&
                               value.value['visitors'][date][l[1]]!=null &&
                               value.value['visitors'][date][l[1]][regno]!=null) {
-                            var newKey = value.value['visitors'][date][l[1]][regno]['vid'];
+                            var keyy = value.value['visitors'][date][l[1]][regno]['vid'];
 
                             updates['/allowed_vehicles/' + locID + '/visitors/' + date + '/' + l[1] + '/' + regno] = null;
 
-                            updates['/logs/' + locID + '/' + newKey] = {
+                            updates['/logs/' + locID + '/' + keyy] = {
                               'vregno': regno,
                               'entryts': DateTime.now().millisecondsSinceEpoch,
                               'status': 'ENTERED',
                               'oneTimeVisit': true
                             };
 
-                            updates['/visits/' + l[1] + '/' + newKey + '/status'] = 'ENTERED';
-                            updates['/visits/' + l[1] + '/' + newKey + '/entryts'] = DateTime.now().millisecondsSinceEpoch;
+                            updates['/visits/' + l[1] + '/' + keyy + '/status'] = 'ENTERED';
+                            updates['/visits/' + l[1] + '/' + keyy + '/entryts'] = DateTime.now().millisecondsSinceEpoch;
 
                             updates['/vehicles/' + l[1] + '/' + l[2] + '/status'] = "PENDING";
                             updates['/vehicles/' + l[1] + '/' + l[2] + '/token'] = uuid.v4();
                             updates['/vehicles/' + l[1] + '/' + l[2] + '/amount'] = amount;
                             updates['/vehicles/' + l[1] + '/' + l[2] + '/locID'] = locID;
                             updates['/vehicles/' + l[1] + '/' + l[2] + '/locName'] = locName;
-                            updates['/vehicles/' + l[1] + '/' + l[2] + '/logID'] = newKey;
+                            updates['/vehicles/' + l[1] + '/' + l[2] + '/logID'] = keyy;
                           }
                           else {
                             invalidQR();
